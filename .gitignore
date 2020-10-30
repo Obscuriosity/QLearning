@@ -1,0 +1,8 @@
+# Ignore files and folders produced by Data Handling
+*.npy
+*.png
+*.txt
+*.pkl
+QTables/
+Test???????/
+__pycache__/
