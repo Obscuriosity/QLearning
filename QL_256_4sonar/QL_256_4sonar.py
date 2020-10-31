@@ -6,7 +6,7 @@ QL_256_4sonar
     States will be based on current state and previous state giving a greater perception of sequence.
     Added UCB (Upper Confidence Bound) policy, to see if I can notice any Improvement.
     The UCB data list Qu will contain the number of times an action is taken and also be used to store total reward to get average reward
-    
+
     getReward - removed the -5 penalty for turning and reduced the -100 penalty for crashing to a token -3.
 '''
 
@@ -29,7 +29,7 @@ arduino.flush()
 t = int(0) # Variable for timestep count
 
 if os.path.isfile(DH.LOG) == True: #'QL_16_Explore_log.txt'
-    print ("Loading Lists...")    
+    print ("Loading Lists...")
     t = DH.LoadLog()
 else:
     print("Creating Lists...")
@@ -67,7 +67,7 @@ rightBac.start(0)
 
 button = 4 # Pause Switch GPIO 4
 pause = 0  # Paused / Resume state
-    
+
 # Lets have a function to stop the motors
 Stopped = False
 def Stop():
@@ -202,7 +202,7 @@ def getAction(s, epsilon): # pass the s index of Q table and epsilon, to get max
         action = random.randrange(0,3)
         #print("Random Action = ", action, ", Random Value = ", randVal, ", Epsilon = ", epsilon)
     Qu[s, action, 0] += 1 # Add to running total number of times chosen
-    
+
     return(action)
 
 def Forward():
@@ -222,12 +222,12 @@ def SpinLeft():
     leftBac.ChangeDutyCycle(0)
     rightFor.ChangeDutyCycle(0)
     rightBac.ChangeDutyCycle(rightDutyCycle)
-    
+
 def SpinRight():
     leftFor.ChangeDutyCycle(0)
     leftBac.ChangeDutyCycle(leftDutyCycle)
     rightFor.ChangeDutyCycle(rightDutyCycle)
-    rightBac.ChangeDutyCycle(0)    
+    rightBac.ChangeDutyCycle(0)
 
 def Act(action):
     global leftDutyCycle, rightDutyCycle
@@ -239,13 +239,13 @@ def Act(action):
     if action == 2: # Turn Right
         SpinRight()
 crashed = False
-        
+
 REWARD_LIST = np.array([-1, -2, -2, -1, -1, -2, -2, -1])
 
-def getReward():
+def getReward(newState):
     global crashed, states, s, a, REWARD_LIST, Qu
     r = 0
-    reward = np.multiply(states[s], REWARD_LIST)
+    reward = np.multiply(states[newState], REWARD_LIST)
     #print('State Reward = ', reward)
     r += np.sum(reward)
     if np.sum(reward) == 0:
@@ -255,14 +255,14 @@ def getReward():
     #print ("Reward = ", r)
     r = round(r, 2)
     Qu[s, a, 1] += r # Add to running total reward list
-    
+
     return (r)
 
 def QLearn():
     global Q, s, states, alpha, gamma
-    r = getReward() # get reward based on action and distance from obstacles
-    #print ("Old State = ", states[s])
     newS = getState() # newS = index of state in states list
+    r = getReward(newS) # get reward based on action and distance from obstacles
+    #print ("Old State = ", states[s])
     max_future_Q = np.max(Q[newS]) # Get Q Value of optimum action.
     currentQ = Q[s,a]
     #print ("currentQ = ", currentQ)
@@ -278,7 +278,7 @@ def QLearn():
 def LogDict(r):
     global  epsilon
     # Log rewards to monitor progress
-    rewards.append(r) 
+    rewards.append(r)
     if not t % STATS_EVERY:
         average_reward = sum(rewards[-STATS_EVERY:])/STATS_EVERY
         aggr_rewards['t'].append(t)
@@ -286,7 +286,7 @@ def LogDict(r):
         aggr_rewards['max'].append(max(rewards[-STATS_EVERY:]))
         aggr_rewards['min'].append(min(rewards[-STATS_EVERY:]))
         aggr_rewards['eps'].append(epsilon)
-    
+
 epsilon = 0.1
 EPSILON_END = 100000
 EPSILON_DECAY = epsilon/EPSILON_END
@@ -348,7 +348,7 @@ while True:
                     s = getState()
                     Stopped = False
                     crashed = False
-                    
+
             else:
                 t += 1
                 if epsilon > 0:
