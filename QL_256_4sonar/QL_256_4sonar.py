@@ -251,7 +251,7 @@ def getReward(newState):
     if np.sum(reward) == 0:
         r += 1
     if crashed == True:
-        r -= 3
+        r -= 1
     #print ("Reward = ", r)
     r = round(r, 2)
     Qu[s, a, 1] += r # Add to running total reward list
