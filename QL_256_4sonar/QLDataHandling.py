@@ -85,7 +85,7 @@ def mapp(x, in_min, in_max, out_min, out_max):
 
 def CreateData():
     sonar_range = 2
-    startVal = 20.0
+    startVal = 1.0
 
     Q_table = np.array([[startVal, startVal, startVal]])
     States_List = []
